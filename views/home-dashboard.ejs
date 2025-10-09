@@ -1,0 +1,41 @@
+<%- include("include/header") %>
+
+<div class="container py-md-5 container--narrow">
+  <h2 class="mb-4">Сайн байна уу, <strong><%= user.username %></strong></h2>
+  <h5 class="mb-3">Шинэ постууд</h5>
+
+  <% if (Array.isArray(posts) && posts.length) { %>
+    <div class="list-group">
+      <% posts.forEach(function(p){ %>
+        <div class="list-group-item mb-2">
+          <h6 class="mb-1">
+            <a href="/post/<%= p._id %>"><%= p.title %></a>
+          </h6>
+          <p class="mb-1 small text-muted">
+            <% if (p.shared && p.shared.originalAuthor) { %>
+              Shared by <a href="/profile/<%= p.author %>"><%= p.author %></a>
+              (original: <a href="/profile/<%= p.shared.originalAuthor %>"><%= p.shared.originalAuthor %></a>) •
+              <%= new Date(p.createdDate).toLocaleString() %>
+            <% } else { %>
+              by <a href="/profile/<%= p.author %>"><%= p.author %></a> • <%= new Date(p.createdDate).toLocaleString() %>
+            <% } %>
+          </p>
+          <div class="small"><%= (p.body || '').slice(0,160) %><% if ((p.body || '').length > 160) { %>...<% } %></div>
+          <div class="mt-2">
+            <a class="btn btn-sm btn-outline-primary" href="/post/<%= p._id %>">Дэлгэрэнгүй</a>
+            <% if (user && user.username !== p.author && !(p.shared && p.author === user.username)) { %>
+              <form action="/post/<%= p._id %>/share" method="POST" class="d-inline">
+                <button class="btn btn-sm btn-outline-success" type="submit">Share</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info">Одоогоор таны feed-д харагдах нийтлэл алга. <a href="/create-post">Эхний постоо үүсгээрэй</a>.</div>
+  <% } %>
+</div>
+
+  <!-- footer begins -->
+ <%- include("include/footer") %>

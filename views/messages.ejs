@@ -1,0 +1,27 @@
+<%- include('include/header') %>
+
+<div class="container py-3">
+  <h4>Chat with <%= partner %></h4>
+  <div class="card mb-3">
+    <div class="card-body" style="max-height: 50vh; overflow-y: auto;">
+      <% if (conversation && conversation.length) { %>
+        <% conversation.forEach(function(msg){ %>
+          <div class="mb-2">
+            <span class="badge <%= msg.from === me ? 'badge-primary' : 'badge-secondary' %>"><%= msg.from %></span>
+            <small class="text-muted"><%= new Date(msg.createdDate).toLocaleString() %></small>
+            <div><%= msg.body %></div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="text-muted">No messages yet.</div>
+      <% } %>
+    </div>
+  </div>
+
+  <form action="/messages/<%= partner %>" method="POST" class="form-inline">
+    <input type="text" name="body" class="form-control mr-2 flex-grow-1" placeholder="Type a message..." autocomplete="off" required>
+    <button class="btn btn-primary">Send</button>
+  </form>
+</div>
+
+<%- include('include/footer') %>

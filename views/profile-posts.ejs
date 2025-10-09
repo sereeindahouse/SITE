@@ -1,0 +1,25 @@
+<%- include('include/header') %>
+<div class="container py-3">
+  <h3 class="mb-3"><%= profileUsername %>'s Posts</h3>
+  <% if (posts && posts.length) { %>
+    <ul class="list-group">
+      <% posts.forEach(function(post){ %>
+        <li class="list-group-item">
+          <a href="/post/<%= post._id %>"><%= post.title %></a>
+          <div class="text-muted small">
+            <% let dateVal = post.createdDate; if (post.shared && post.shared.sharedDate) dateVal = post.shared.sharedDate; %>
+            <%= new Date(dateVal).toLocaleString() %>
+            <% if (post.shared && post.shared.originalAuthor && !post.shared.to) { %>
+              <span class="badge badge-secondary ml-2">Shared from <a href="/profile/<%= post.shared.originalAuthor %>"><%= post.shared.originalAuthor %></a></span>
+            <% } else if (post.shared && post.shared.originalAuthor && post.shared.to && post.shared.to.toLowerCase() === profileUsername.toLowerCase()) { %>
+              <span class="badge badge-info ml-2">Shared to you by <a href="/profile/<%= post.author %>"><%= post.author %></a> (original: <a href="/profile/<%= post.shared.originalAuthor %>"><%= post.shared.originalAuthor %></a>)</span>
+            <% } %>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="alert alert-info">No posts found.</div>
+  <% } %>
+</div>
+<%- include('include/footer') %>

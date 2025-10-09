@@ -1,0 +1,19 @@
+<%- include("include/header") %>
+<div class="container py-md-5 container--narrow">
+  <h2>Search results for "<%= searchTerm %>"</h2>
+
+  <% if (!posts || posts.length === 0) { %>
+    <p class="text-muted">Энэ хэрэглэгчийн пост байхгүй байна.</p>
+  <% } else { %>
+    <div class="list-group">
+      <% posts.forEach(function(post) { %>
+        <a href="/post/<%= post._id %>" class="list-group-item list-group-item-action">
+          <h5 class="mb-1"><%= post.title %></h5>
+          <small class="text-muted">by <%= post.author %> — <%= new Date(post.createdDate).toLocaleString() %></small>
+          <p class="mb-1 text-truncate"><%= post.body %></p>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+<%- include("include/footer") %>

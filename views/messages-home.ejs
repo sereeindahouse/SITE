@@ -1,0 +1,27 @@
+<%- include('include/header') %>
+
+<div class="container py-3">
+  <h4>Find someone to chat</h4>
+  <form method="GET" action="/messages" class="form-inline mb-3">
+    <input type="text" class="form-control mr-2" name="q" placeholder="Search username..." value="<%= q || '' %>" required>
+    <button class="btn btn-primary">Search</button>
+  </form>
+
+  <% if (q) { %>
+    <h6 class="text-muted">Results for "<%= q %>":</h6>
+    <% if (results && results.length) { %>
+      <ul class="list-group">
+        <% results.forEach(function(name){ %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span><%= name %></span>
+            <a class="btn btn-sm btn-success" href="/messages/<%= name %>">Chat</a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <div class="alert alert-info mt-2">No users found.</div>
+    <% } %>
+  <% } %>
+</div>
+
+<%- include('include/footer') %>

@@ -1,0 +1,80 @@
+<%- include("include/header") %>
+  <div class="container py-md-5 container--narrow">
+    <div class="d-flex justify-content-between">
+      <h2><%= post.title %></h2>
+      <% if (isOwner) { %>
+      <span class="pt-2">
+        <a href="/post/<%= postId %>/edit" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Засах"><i class="fas fa-edit"></i></a>
+        <form class="delete-post-form d-inline" action="/post/<%= postId %>/delete" method="POST" onsubmit="return confirm('Энэ постыг устгах уу?');">
+          <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Устгах"><i class="fas fa-trash"></i></button>
+        </form>
+      </span>
+      <% } %>
+    </div>
+      
+    <p class="text-muted small mb-4">
+      <a href="/profile/<%= post.author %>"><img class="avatar-tiny" src="https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128"></a>
+      <% if (post.shared && post.shared.originalAuthor) { %>
+        Shared by <a href="/profile/<%= post.author %>"><%= post.author %></a>
+        (original: <a href="/profile/<%= post.shared.originalAuthor %>"><%= post.shared.originalAuthor %></a>) on <%= new Date(post.createdDate).toLocaleDateString() %>
+      <% } else { %>
+        Posted by <a href="/profile/<%= post.author %>"><%= post.author %></a> on <%= new Date(post.createdDate).toLocaleDateString() %>
+      <% } %>
+    </p>
+
+    <div class="body-content">
+      <%= post.body %>
+    </div>
+
+    <% if (!isOwner && user && post.author !== user.username && !(post.shared && post.author === user.username)) { %>
+      <div class="mt-4 p-3 border rounded bg-light">
+        <form action="/post/<%= postId %>/share" method="POST" class="mb-2">
+          <button class="btn btn-sm btn-success">Share to my profile</button>
+        </form>
+        <form action="/post/<%= postId %>/share-to-friend-profile" method="POST" class="share-friend-form">
+          <div class="form-group mb-2">
+            <label for="friendUsername" class="small font-weight-bold mb-1">Share to friend's profile</label>
+            <input id="friendUsername" name="friend" type="text" class="form-control form-control-sm" placeholder="Enter username" autocomplete="off" list="friend-suggestions">
+            <datalist id="friend-suggestions"></datalist>
+          </div>
+          <button class="btn btn-sm btn-primary">Share to friend</button>
+        </form>
+      </div>
+    <% } %>
+
+  </div>
+  
+  <script>
+  (function(){
+    const input = document.getElementById('friendUsername');
+    if(!input) return;
+    let lastTerm = '';
+    let timer;
+    input.addEventListener('input', function(){
+      const term = this.value.trim();
+      if(term.length === 0){
+        document.getElementById('friend-suggestions').innerHTML='';
+        lastTerm='';
+        return;
+      }
+      if(term === lastTerm) return;
+      lastTerm = term;
+      clearTimeout(timer);
+      timer = setTimeout(()=>{
+        fetch('/user-search?term=' + encodeURIComponent(term))
+          .then(r=>r.json())
+          .then(list=>{
+            const dl = document.getElementById('friend-suggestions');
+            dl.innerHTML='';
+            list.forEach(u=>{
+              const opt = document.createElement('option');
+              opt.value = u;
+              dl.appendChild(opt);
+            });
+          }).catch(()=>{});
+      }, 250);
+    });
+  })();
+  </script>
+  <!-- footer begins -->
+  <%- include("include/footer") %>

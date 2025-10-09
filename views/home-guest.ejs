@@ -1,0 +1,53 @@
+<%- include("include/header") %>
+<!-- header ends here -->
+
+<div class="container py-md-5">
+  <% if(errors && errors.length>0) { %>
+  <div class="alert alert-danger small">
+     <ul class="mb-0">
+       <% errors.forEach(function(error){ %>
+         <li><%= error %></li>
+       <% }); %>
+      </ul>
+    </div>
+  <% } %>
+  <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+  <div class="flash-errors">
+    <% errors.forEach(function(msg){ %>
+      <div class="error"><%= msg %></div>
+    <% }) %>
+  </div>
+<% } %>
+  <div class="row align-items-center">
+    <div class="col-lg-7 py-3 py-md-5">
+      <h1 class="display-3">Facebook Beta</h1>
+      <p class="lead text-muted">
+        Сургуулийн хэмжээнд мэдлэг хуваалцах платформ бөгөөд сонирхолтой контент, хэлэлцүүлэг, болон хамтын ажиллагааг дэмжих зорилготой.</p>
+    </div>
+    <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
+      <form action="/register" method="POST" id="registration-form">
+
+          <div class="form-group">
+            <label for="username-register" class="text-muted mb-1"><small>Хэрэглэгчийн нэр</small></label>
+            <input name="username" id="username-register" class="form-control" type="text" placeholder="Хэрэглэгчийн нэрээ сонгоно уу" autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label for="email-register" class="text-muted mb-1"><small>И‑мэйл</small></label>
+            <input name="email" id="email-register" class="form-control" type="text" placeholder="tanii@jishgee.mn" autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label for="password-register" class="text-muted mb-1"><small>Нууц үг</small></label>
+            <input name="password" id="password-register" class="form-control" type="password" placeholder="Нууц үг үүсгэнэ үү">
+          </div>
+          
+          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success btn-block">МанайАпп‑д бүртгүүлэх</button>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+  
+<!-- footer begins -->
+<%- include("include/footer") %>

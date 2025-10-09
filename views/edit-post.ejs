@@ -1,0 +1,19 @@
+<%- include("include/header") %>
+  <div class="container py-md-5 container--narrow">
+    <h2 class="mb-4">Пост засварлах</h2>
+    <form action="/post/<%= postId %>/edit" method="POST">
+      <div class="form-group">
+        <label class="text-muted mb-1"><small>Title</small></label>
+        <input required name="title" id="post-title" class="form-control form-control-lg form-control-title" type="text" value="<%- post.title %>">
+      </div>
+
+      <div class="form-group">
+        <label for="post-body" class="text-muted mb-1"><small>Body Content</small></label>
+        <textarea required name="body" id="post-body" class="form-control" rows="6"><%- post.body %></textarea>
+      </div>
+
+      <button class="btn btn-primary">Update Post</button>
+      <a href="/post/<%= postId %>" class="btn btn-secondary ml-2">Cancel</a>
+    </form>
+  </div>
+<%- include("include/footer") %>
