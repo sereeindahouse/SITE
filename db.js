@@ -8,24 +8,13 @@ if (!uri) {
   process.exit(1);
 }
 
-// Configure MongoClient for Atlas Stable API (helps with forward compatibility)
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: '1',
-    strict: true,
-    deprecationErrors: true
-  },
-  // Defensive timeouts (Render free tier can be slow cold-starting)
-  connectTimeoutMS: 20000,
-  socketTimeoutMS: 45000
-});
+// Do not force TLS: the driver will negotiate TLS for Atlas (mongodb+srv) and skip it for local mongodb:// URIs.
+const client = new MongoClient(uri);
 
 async function start() {
   try {
-  await client.connect();
-  // Simple ping to verify primary selection; surfaces TLS / network issues early
-  await client.db('admin').command({ ping: 1 });
-  console.log("✅ MongoDB connected & ping successful");
+    await client.connect();
+    console.log("DB connected");
     const db = client.db(process.env.DB_NAME || "MagnusKS");
     module.exports = db;
 
@@ -35,16 +24,7 @@ async function start() {
       console.log("server started at", port);
     });
   } catch (err) {
-    console.error("DB connection error:");
-    // Provide concise helpful hints for common Atlas TLS errors
-    if (err && err.message && err.message.includes('SSL routines')) {
-      console.error('• TLS error detected. Possible causes:');
-      console.error('  - Incorrect SRV URI (missing trailing /?)');
-      console.error('  - Password contains special characters not URL-encoded');
-      console.error('  - Local network / hosting provider blocking TLS handshake');
-      console.error('  - IP not allowed in Atlas Network Access');
-    }
-    console.error(err);
+    console.error("DB connection error:", err);
     process.exit(1);
   }
 }
