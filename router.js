@@ -6,6 +6,7 @@ let postController = require("./controllers/postController");
 let messagesController = require("./controllers/messagesController");
 let groupController = require("./controllers/groupController");
 let friendController = require("./controllers/friendController");
+let securityController = require("./controllers/securityController");
 
 // home
 router.get("/", userController.home);
@@ -14,6 +15,10 @@ router.get("/", userController.home);
 router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.post("/logout", userController.logout);
+router.get('/forgot-password', securityController.forgotPasswordForm);
+router.post('/forgot-password', securityController.forgotPasswordStart);
+router.get('/reset-password', securityController.resetPasswordForm); // expects ?token=
+router.post('/reset-password', securityController.resetPasswordFinish);
 
 // create post
 router.get('/create-post', (req, res) => {
