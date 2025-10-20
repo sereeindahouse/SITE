@@ -1,6 +1,7 @@
 const e = require("connect-flash");
 let User = require("../models/User");
 let Post = require("../models/Post");
+const bcrypt = require('bcryptjs');
 
 exports.checkLogin = function(req, res, next) {
     console.log("checkLogin - req.session.user:", req.session ? req.session.user : "no session");
@@ -27,16 +28,51 @@ exports.home = async function(req,res){
         try {
             // fetch feed posts (exclude my own for now)
             const posts = await Post.feed({ excludeUser: req.session.user.username, limit: 25 });
-            res.render("home-dashboard", { username: req.session.user.username, user: req.session.user, posts });
+            const Group = require('../models/Group');
+            const myGroups = await Group.list(200); // show all groups to pick from
+            res.render("home-dashboard", { username: req.session.user.username, user: req.session.user, posts, myGroups });
             return;
         } catch (e) {
             console.error("home feed error:", e);
-            res.render("home-dashboard", { username: req.session.user.username, user: req.session.user, posts: [] });
+            res.render("home-dashboard", { username: req.session.user.username, user: req.session.user, posts: [], myGroups: [] });
             return;
         }
     }
     // for guests rely on res.locals.errors (set in app.js middleware) and res.locals.user
     res.render("home-guest");
+};
+
+exports.settingsPage = function(req, res) {
+    if (!req.session.user) return res.redirect('/');
+    res.render('settings', { user: req.session.user });
+};
+
+exports.changePassword = async function(req, res) {
+    try {
+        if (!req.session.user) return res.redirect('/');
+        const current = (req.body.current || '').toString();
+        const next = (req.body.next || '').toString();
+        if (next.length < 3) {
+            req.flash('errors', 'Нууц үг богино байна.');
+            return req.session.save(() => res.redirect('/settings'));
+        }
+        const db = require('../db');
+        const users = db.collection('users');
+        const user = await users.findOne({ username: req.session.user.username });
+        if (!user || !bcrypt.compareSync(current, user.password)) {
+            req.flash('errors', 'Одоогийн нууц үг буруу.');
+            return req.session.save(() => res.redirect('/settings'));
+        }
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(next, salt);
+        await users.updateOne({ _id: user._id }, { $set: { password: hash } });
+        req.flash('success', 'Нууц үг солигдлоо.');
+        return req.session.save(() => res.redirect('/settings'));
+    } catch (e) {
+        console.error('changePassword error:', e);
+        req.flash('errors', 'Системийн алдаа');
+        return req.session.save(() => res.redirect('/settings'));
+    }
 };
 exports.login = function(req,res){
     let user = new User(req.body);
@@ -111,6 +147,22 @@ exports.ifUserExists = function(req, res, next) {
         }
         req.followerCount = 0;
         req.followingCount = 0;
+
+        // friends
+        try {
+            const Friendship = require('../models/Friendship');
+            const friends = await Friendship.friendsOf(req.profileUser.username);
+            req.friendCount = Array.isArray(friends) ? friends.length : 0;
+            // friend status between visitor and profile owner
+            if (req.session.user && req.session.user.username) {
+                req.friendStatus = await Friendship.statusBetween(req.session.user.username, req.profileUser.username);
+            } else {
+                req.friendStatus = 'none';
+            }
+        } catch (_) {
+            req.friendCount = 0;
+            req.friendStatus = 'none';
+        }
         next();
     };
     exports.viewProfile = function(req, res) {
@@ -119,7 +171,9 @@ exports.ifUserExists = function(req, res, next) {
             profileAvatar: req.profileUser.avatar,
             isVisitorsProfile: req.isVisitorsProfile,
             isFollowing: req.isFollowing,
-            counts: { postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount }
+            friendStatus: req.friendStatus,
+            counts: { postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount, friendCount: req.friendCount },
+            user: req.session.user || null
         });
     };
     exports.profilePostsScreen = async function(req, res) {

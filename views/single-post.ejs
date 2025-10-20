@@ -39,6 +39,20 @@
           </div>
           <button class="btn btn-sm btn-primary">Share to friend</button>
         </form>
+        <% if (Array.isArray(myGroups) && myGroups.length) { %>
+          <form action="/groups/share" method="POST" class="mt-2">
+            <input type="hidden" name="postId" value="<%= postId %>">
+            <div class="form-group mb-2">
+              <label class="small font-weight-bold">Share to group</label>
+              <select name="groupId" class="form-control form-control-sm">
+                <% myGroups.forEach(function(g){ %>
+                  <option value="<%= g._id %>"><%= g.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <button class="btn btn-sm btn-info">Share to group</button>
+          </form>
+        <% } %>
       </div>
     <% } %>
 

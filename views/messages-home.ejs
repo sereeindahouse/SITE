@@ -14,7 +14,12 @@
         <% results.forEach(function(name){ %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span><%= name %></span>
-            <a class="btn btn-sm btn-success" href="/messages/<%= name %>">Chat</a>
+            <div>
+              <form action="/friend/request/<%= name %>" method="POST" class="d-inline mr-1">
+                <button class="btn btn-sm btn-outline-primary">Add Friend</button>
+              </form>
+              <a class="btn btn-sm btn-success" href="/messages/<%= name %>">Chat</a>
+            </div>
           </li>
         <% }) %>
       </ul>

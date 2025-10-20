@@ -27,6 +27,19 @@
               <form action="/post/<%= p._id %>/share" method="POST" class="d-inline">
                 <button class="btn btn-sm btn-outline-success" type="submit">Share</button>
               </form>
+              <% if (Array.isArray(myGroups) && myGroups.length) { %>
+              <form action="/groups/share" method="POST" class="d-inline">
+                <input type="hidden" name="postId" value="<%= p._id %>">
+                <div class="d-inline-block">
+                  <select name="groupId" class="custom-select custom-select-sm d-inline w-auto">
+                    <% myGroups.forEach(function(g){ %>
+                      <option value="<%= g._id %>"><%= g.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <button class="btn btn-sm btn-outline-info" type="submit">Add to Group</button>
+              </form>
+              <% } %>
             <% } %>
           </div>
         </div>

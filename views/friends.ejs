@@ -1,0 +1,40 @@
+<%- include('include/header') %>
+
+<div class="container py-3">
+  <h4><%= profileUser %>'s Friends</h4>
+  <% if (friends && friends.length) { %>
+    <ul class="list-group mb-3">
+      <% friends.forEach(function(f){ %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="/profile/<%= f %>"><%= f %></a>
+          <form action="/friend/decline/<%= f %>" method="POST" class="d-inline">
+            <button class="btn btn-sm btn-outline-danger">Remove</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="alert alert-info">No friends yet.</div>
+  <% } %>
+
+  <% if (incoming && incoming.length) { %>
+    <h6>Incoming requests</h6>
+    <ul class="list-group">
+      <% incoming.forEach(function(f){ %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="/profile/<%= f %>"><%= f %></a>
+          <div>
+            <form action="/friend/accept/<%= f %>" method="POST" class="d-inline">
+              <button class="btn btn-sm btn-success">Confirm</button>
+            </form>
+            <form action="/friend/decline/<%= f %>" method="POST" class="d-inline">
+              <button class="btn btn-sm btn-secondary">Delete</button>
+            </form>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</div>
+
+<%- include('include/footer') %>

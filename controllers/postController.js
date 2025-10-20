@@ -33,7 +33,14 @@ exports.viewSingle = async function(req, res) {
     }
     const username = req.session.user ? req.session.user.username : null;
     const isOwner = username && post.author === username;
-    res.render("single-post", { post: post, user: req.session.user || null, isOwner, postId: post._id.toString() });
+    let myGroups = [];
+    if (username) {
+      try {
+        const Group = require('../models/Group');
+        myGroups = await Group.listForUser(username);
+      } catch (_) {}
+    }
+    res.render("single-post", { post: post, user: req.session.user || null, isOwner, postId: post._id.toString(), myGroups });
   } catch (e) {
     console.error("viewSingle error:", e);
     req.flash("errors", "Системийн алдаа. Дахин оролдоно уу.");

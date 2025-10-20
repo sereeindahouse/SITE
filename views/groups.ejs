@@ -1,0 +1,49 @@
+<%- include('include/header') %>
+
+<div class="container py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Groups</h4>
+    <% if (me) { %>
+      <form action="/groups" method="POST" class="form-inline">
+        <input type="text" class="form-control mr-2" name="name" placeholder="New group name" required>
+        <input type="text" class="form-control mr-2" name="description" placeholder="Description">
+        <button class="btn btn-sm btn-success">Create</button>
+      </form>
+    <% } %>
+  </div>
+
+  <% if (groups && groups.length) { %>
+    <ul class="list-group">
+      <% groups.forEach(function(g){ %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <a href="/groups/<%= g._id %>"><strong><%= g.name %></strong></a>
+            <div class="small text-muted"><%= g.description || '' %></div>
+          </div>
+          <div class="d-flex align-items-center">
+            <small class="text-muted mr-3">members: <%= (g.members || []).length %></small>
+            <% if (me) { %>
+              <% const isMember = (g.members || []).some(m => m.toLowerCase() === me.toLowerCase()); %>
+              <% const isPending = (g.joinRequests || []).some(u => u.toLowerCase() === me.toLowerCase()); %>
+              <% if (isMember) { %>
+                <form action="/groups/<%= g._id %>/leave" method="POST" class="d-inline">
+                  <button class="btn btn-sm btn-outline-secondary">Leave</button>
+                </form>
+              <% } else if (isPending) { %>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Requested</button>
+              <% } else { %>
+                <form action="/groups/<%= g._id %>/join" method="POST" class="d-inline">
+                  <button class="btn btn-sm btn-success">Join</button>
+                </form>
+              <% } %>
+            <% } %>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="alert alert-info">No groups yet.</div>
+  <% } %>
+</div>
+
+<%- include('include/footer') %>

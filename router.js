@@ -4,6 +4,8 @@ const router = express.Router();
 let userController = require("./controllers/userController");
 let postController = require("./controllers/postController");
 let messagesController = require("./controllers/messagesController");
+let groupController = require("./controllers/groupController");
+let friendController = require("./controllers/friendController");
 
 // home
 router.get("/", userController.home);
@@ -102,5 +104,30 @@ router.get("/search", postController.search);
 router.get("/messages", userController.checkLogin, messagesController.home);
 router.get("/messages/:username", userController.checkLogin, messagesController.viewConversation);
 router.post("/messages/:username", userController.checkLogin, messagesController.send);
+
+// groups
+router.get('/groups', userController.checkLogin, groupController.list);
+router.post('/groups', userController.checkLogin, groupController.create);
+router.get('/groups/:id', userController.checkLogin, groupController.view);
+router.post('/groups/:id/join', userController.checkLogin, groupController.join);
+router.post('/groups/:id/leave', userController.checkLogin, groupController.leave);
+router.post('/groups/:id/kick/:username', userController.checkLogin, groupController.kick);
+router.post('/groups/:id/approve/:username', userController.checkLogin, groupController.approve);
+router.post('/groups/:id/reject/:username', userController.checkLogin, groupController.reject);
+router.post('/groups/:id/share', userController.checkLogin, groupController.sharePost);
+router.post('/groups/share', userController.checkLogin, groupController.sharePost);
+router.post('/groups/:id/create-post', userController.checkLogin, groupController.createPost);
+router.post('/groups/:id/like/:gpid', userController.checkLogin, groupController.like);
+router.post('/groups/:id/unlike/:gpid', userController.checkLogin, groupController.unlike);
+
+// friends
+router.post('/friend/request/:username', userController.checkLogin, friendController.request);
+router.post('/friend/accept/:username', userController.checkLogin, friendController.accept);
+router.post('/friend/decline/:username', userController.checkLogin, friendController.decline);
+router.get('/profile/:username/friends', userController.checkLogin, friendController.friendsList);
+
+// settings
+router.get('/settings', userController.checkLogin, userController.settingsPage);
+router.post('/settings/password', userController.checkLogin, userController.changePassword);
 
 module.exports = router;
