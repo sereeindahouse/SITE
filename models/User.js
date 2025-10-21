@@ -13,6 +13,7 @@ User.prototype.validate = async function () {
   let username = (this.data.username || "").toString().trim();
   let email = (this.data.email || "").toString().trim().toLowerCase();
   let password = (this.data.password || "").toString();
+  let avatar = (this.data.avatar || "").toString().trim();
 
   this.errors = [];
 
@@ -63,10 +64,23 @@ User.prototype.validate = async function () {
     }
   }
 
+  // avatar (optional) must be http/https URL if provided
+  if (avatar) {
+    try {
+      const u = new URL(avatar);
+      if (!(u.protocol === 'http:' || u.protocol === 'https:')) {
+        this.errors.push('Avatar URL must start with http(s)');
+      }
+    } catch (_) {
+      this.errors.push('Avatar URL is not valid');
+    }
+  }
+
   // write normalized values back
   this.data.username = username;
   this.data.email = email;
   this.data.password = password;
+  this.data.avatar = avatar;
 };
 
 User.prototype.register = async function () {
@@ -83,6 +97,7 @@ User.prototype.register = async function () {
           username: this.data.username,
           email: this.data.email,
           password: this.data.password,
+          avatar: this.data.avatar || null,
         });
         resolve();
       } catch (e) {
@@ -125,7 +140,9 @@ User.findByUsername = async function(username) {
     const dbModule = require("../db");
     const db = typeof dbModule.db === "function" ? dbModule.db() : dbModule;
     const userCollection = db.collection("users");
-    const user = await userCollection.findOne({ username: username.toString() });
+    const uname = username.toString();
+    // case-insensitive exact match
+  const user = await userCollection.findOne({ username: { $regex: new RegExp('^' + uname.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '$', 'i') } });
     return user || null;
   } catch (e) {
     console.error("findByUsername error:", e);

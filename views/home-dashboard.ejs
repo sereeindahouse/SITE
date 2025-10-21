@@ -1,7 +1,10 @@
 <%- include("include/header") %>
 
 <div class="container py-md-5 container--narrow">
-  <h2 class="mb-4">Сайн байна уу, <strong><%= user.username %></strong></h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Сайн байна уу, <strong><%= user.username %></strong></h2>
+    <a class="btn btn-sm btn-outline-secondary" href="/settings" title="Settings">Settings</a>
+  </div>
   <h5 class="mb-3">Шинэ постууд</h5>
 
   <% if (Array.isArray(posts) && posts.length) { %>
@@ -33,7 +36,7 @@
                 <div class="d-inline-block">
                   <select name="groupId" class="custom-select custom-select-sm d-inline w-auto">
                     <% myGroups.forEach(function(g){ %>
-                      <option value="<%= g._id %>"><%= g.name %></option>
+                      <option value="<%= g._id && g._id.toString ? g._id.toString() : g._id %>"><%= g.name %></option>
                     <% }) %>
                   </select>
                 </div>

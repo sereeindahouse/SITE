@@ -51,14 +51,10 @@ router.get('/user-search', userController.checkLogin, async function(req, res) {
     const term = (req.query.term || '').toString().trim();
     if (!term) return res.json([]);
     const User = require('./models/User');
-    const results = await User.reusableUserQuery([
-      { $match: { username: { $regex: new RegExp('^' + term, 'i') } } },
-      { $limit: 10 },
-      { $project: { username: 1 } }
-    ]);
-    res.json(results.map(u => u.username));
+    const results = await User.searchByUsername(term, { limit: 10 });
+    return res.json(results);
   } catch (e) {
-    res.json([]);
+    return res.json([]);
   }
 });
 
@@ -134,5 +130,6 @@ router.get('/profile/:username/friends', userController.checkLogin, friendContro
 // settings
 router.get('/settings', userController.checkLogin, userController.settingsPage);
 router.post('/settings/password', userController.checkLogin, userController.changePassword);
+router.post('/settings/avatar', userController.checkLogin, userController.changeAvatar);
 
 module.exports = router;

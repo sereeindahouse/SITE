@@ -34,12 +34,11 @@ exports.viewSingle = async function(req, res) {
     const username = req.session.user ? req.session.user.username : null;
     const isOwner = username && post.author === username;
     let myGroups = [];
-    if (username) {
-      try {
-        const Group = require('../models/Group');
-        myGroups = await Group.listForUser(username);
-      } catch (_) {}
-    }
+    try {
+      const Group = require('../models/Group');
+      // Show all groups so user can share to any group
+      myGroups = await Group.list(200);
+    } catch (_) {}
     res.render("single-post", { post: post, user: req.session.user || null, isOwner, postId: post._id.toString(), myGroups });
   } catch (e) {
     console.error("viewSingle error:", e);

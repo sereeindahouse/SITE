@@ -32,6 +32,8 @@ app.use(function (req, res, next) {
   res.locals.user = req.session.user || null;
   next();
 });
+// Serve static assets
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/",router);

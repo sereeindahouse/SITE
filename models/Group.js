@@ -41,7 +41,11 @@ Group.list = async function(limit = 20) {
 Group.listForUser = async function(username) {
   try {
     if (!username) return [];
-    return await groupCollection.find({ members: username }).project({ name: 1 }).toArray();
+    const uname = username.toString();
+    return await groupCollection
+      .find({ members: { $elemMatch: { $regex: new RegExp('^' + uname.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'i') } } })
+      .project({ name: 1 })
+      .toArray();
   } catch (e) {
     return [];
   }

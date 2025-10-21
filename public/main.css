@@ -367,3 +367,10 @@ textarea.tall-textarea {
   outline: none;
   font-size: .75rem;
 }
+
+/* Guest hero image */
+.guest-hero-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

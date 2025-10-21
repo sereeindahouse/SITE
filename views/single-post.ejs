@@ -46,7 +46,7 @@
               <label class="small font-weight-bold">Share to group</label>
               <select name="groupId" class="form-control form-control-sm">
                 <% myGroups.forEach(function(g){ %>
-                  <option value="<%= g._id %>"><%= g.name %></option>
+                  <option value="<%= g._id && g._id.toString ? g._id.toString() : g._id %>"><%= g.name %></option>
                 <% }) %>
               </select>
             </div>
