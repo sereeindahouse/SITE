@@ -75,28 +75,6 @@ exports.changePassword = async function(req, res) {
     }
 };
 
-exports.changeAvatar = async function(req, res) {
-    try {
-        if (!req.session.user) return res.redirect('/');
-        const avatar = (req.body.avatar || '').toString().trim();
-        if (avatar) {
-            try { const u = new URL(avatar); if (!(u.protocol==='http:'||u.protocol==='https:')) throw new Error('bad'); } catch (_) {
-                req.flash('errors', 'Avatar URL must start with http(s).');
-                return req.session.save(() => res.redirect('/settings'));
-            }
-        }
-        const db = require('../db');
-        const users = db.collection('users');
-        await users.updateOne({ username: req.session.user.username }, { $set: { avatar: avatar || null } });
-        req.session.user.avatar = avatar || null;
-        req.flash('success', 'Avatar updated.');
-        return req.session.save(() => res.redirect('/settings'));
-    } catch (e) {
-        console.error('changeAvatar error:', e);
-        req.flash('errors', 'Системийн алдаа');
-        return req.session.save(() => res.redirect('/settings'));
-    }
-};
 exports.login = function(req,res){
     let user = new User(req.body);
     user.login().then(function(){
@@ -104,8 +82,7 @@ exports.login = function(req,res){
         // store useful info in session
         req.session.user = {
             _id: user.data._id || user.data.id || null,
-            username: user.data.username || null,
-            avatar: user.data.avatar || null
+            username: user.data.username || null
         };
         req.session.save(function(){
             res.redirect("/");
@@ -125,7 +102,7 @@ exports.login = function(req,res){
 exports.register = function(req,res){
 let user= new User(req.body);
 user.register().then(()=>{
-    req.session.user= {username: user.data.username, avatar: user.data.avatar || null};
+    req.session.user= {username: user.data.username};
     req.session.save(function(){
     res.redirect("/");
     }); 

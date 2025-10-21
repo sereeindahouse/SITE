@@ -1,6 +1,7 @@
 <%- include("include/header") %>
 <!-- header ends here -->
 
+<div class="home-guest-bg">
 <div class="container py-md-5">
   <% if(errors && errors.length>0) { %>
   <div class="alert alert-danger small">
@@ -20,13 +21,13 @@
 <% } %>
   <div class="row align-items-center">
     <div class="col-lg-7 py-3 py-md-5">
-      <h1 class="display-3">Facebook Beta</h1>
-      <p class="lead text-muted">
+      <h1 class="display-3 text-white">Facebook Beta</h1>
+      <p class="lead text-light">
         Сургуулийн хэмжээнд мэдлэг хуваалцах платформ бөгөөд сонирхолтой контент, хэлэлцүүлэг, болон хамтын ажиллагааг дэмжих зорилготой.</p>
-      <img src="/images/natue.jpg" alt="Welcome" class="guest-hero-img mt-3">
+      
     </div>
     <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
-      <form action="/register" method="POST" id="registration-form">
+      <form action="/register" method="POST" id="registration-form" class="bg-white p-3 rounded shadow-sm">
 
           <div class="form-group">
             <label for="username-register" class="text-muted mb-1"><small>Хэрэглэгчийн нэр</small></label>
@@ -35,16 +36,12 @@
           
           <div class="form-group">
             <label for="email-register" class="text-muted mb-1"><small>И‑мэйл</small></label>
-            <input name="email" id="email-register" class="form-control" type="text" placeholder="tanii@jishgee.mn" autocomplete="off">
+            <input name="email" id="email-register" class="form-control" type="text" placeholder="tanii@gee.mn" autocomplete="off">
           </div>
           
           <div class="form-group">
             <label for="password-register" class="text-muted mb-1"><small>Нууц үг</small></label>
             <input name="password" id="password-register" class="form-control" type="password" placeholder="Нууц үг үүсгэнэ үү">
-          </div>
-          <div class="form-group">
-            <label for="avatar-register" class="text-muted mb-1"><small>Зураг (Avatar URL)</small></label>
-            <input name="avatar" id="avatar-register" class="form-control" type="url" placeholder="https://...">
           </div>
           
           <button type="submit" class="py-3 mt-4 btn btn-lg btn-success btn-block">МанайАпп‑д бүртгүүлэх</button>
@@ -52,6 +49,7 @@
         </form>
       </div>
     </div>
+  </div>
   </div>
   
 <!-- footer begins -->

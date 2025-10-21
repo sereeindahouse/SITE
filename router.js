@@ -130,6 +130,5 @@ router.get('/profile/:username/friends', userController.checkLogin, friendContro
 // settings
 router.get('/settings', userController.checkLogin, userController.settingsPage);
 router.post('/settings/password', userController.checkLogin, userController.changePassword);
-router.post('/settings/avatar', userController.checkLogin, userController.changeAvatar);
 
 module.exports = router;
