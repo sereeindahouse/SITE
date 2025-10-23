@@ -20,6 +20,14 @@ router.post('/forgot-password', securityController.forgotPasswordStart);
 router.get('/reset-password', securityController.resetPasswordForm); // expects ?token=
 router.post('/reset-password', securityController.resetPasswordFinish);
 
+// Dev-only helper to preview reset page without email/token flow
+if (process.env.DEV_RESET_PREVIEW === '1') {
+  router.get('/dev/reset-preview', (req, res) => {
+    // Render the reset page with a placeholder token for UI testing
+    return res.render('reset-password', { token: 'DEV', user: null });
+  });
+}
+
 // Dev-only route to preview reset form without a token
 if (process.env.DEV_ALLOW_RESET_PREVIEW === 'true') {
   router.get('/__dev/reset', (req, res) => {

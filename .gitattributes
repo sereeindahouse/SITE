@@ -1,0 +1,17 @@
+# Normalize line endings across platforms
+* text=auto
+
+# Treat common text files explicitly
+*.js text
+*.json text
+*.ejs text
+*.css text
+*.md text
+*.env text eol=lf
+
+# Binary files
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
