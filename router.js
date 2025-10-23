@@ -20,6 +20,13 @@ router.post('/forgot-password', securityController.forgotPasswordStart);
 router.get('/reset-password', securityController.resetPasswordForm); // expects ?token=
 router.post('/reset-password', securityController.resetPasswordFinish);
 
+// Dev-only route to preview reset form without a token
+if (process.env.DEV_ALLOW_RESET_PREVIEW === 'true') {
+  router.get('/__dev/reset', (req, res) => {
+    return res.render('reset-password', { token: 'dev-preview-token', user: null });
+  });
+}
+
 // create post
 router.get('/create-post', (req, res) => {
   // if you require authentication, uncomment this check

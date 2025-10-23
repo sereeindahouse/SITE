@@ -376,11 +376,11 @@ textarea.tall-textarea {
 }
 
 .home-guest-bg {
-  background-image: url('natue.jpg');
+  background-image: url('/images/facebook-badges-256.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 80vh;
+  min-height: 100vh;
   position: relative;
 }
 
@@ -388,10 +388,48 @@ textarea.tall-textarea {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.15);
 }
 
 .home-guest-bg > .container {
+  position: relative;
+  z-index: 1;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+/* Translucent auth card so the background is visible */
+.auth-card {
+  background: rgba(255,255,255,0.9);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+.hero-title {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+/* Logged-in home (dashboard) background */
+.home-dashboard-bg {
+  background-image: url('/images/natue.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
+}
+
+.home-dashboard-bg::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.12);
+}
+
+.home-dashboard-bg > .container {
   position: relative;
   z-index: 1;
 }
